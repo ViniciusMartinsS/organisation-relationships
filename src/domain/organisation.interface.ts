@@ -6,7 +6,7 @@ export interface OrganisationHandler {
 }
 
 export interface OrganisationUseCase {
-  create(): any,
+  create(request: express.Request): any,
   list(): any
 }
 

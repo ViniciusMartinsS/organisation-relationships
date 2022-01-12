@@ -29,7 +29,7 @@ class OrganisationHandl implements OrganisationHandler {
         .validate(request)
 
       return this.OrganisationUseCase
-        .create()
+        .create(request)
     } catch (error) {
       console.log(error)
     }

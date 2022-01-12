@@ -1,3 +1,4 @@
+import express from 'express'
 import { OrganisationUseCase } from "../domain/organisation.interface"
 
 class OrganisationUseCas implements OrganisationUseCase {
@@ -8,11 +9,26 @@ class OrganisationUseCas implements OrganisationUseCase {
    }
 
   list(): any {
-    return this.OrganisationRepository
+    if (this.OrganisationRepository) {
+      console.log('')
+    }
+    return ''
   }
 
-  create(): any {
-    return this.OrganisationRepository
+  async create(request: express.Request): Promise<any> {
+    const { body } = request;
+    const name = body.map(content => ({ name: content.org_name }))
+
+    const response = await this.OrganisationRepository
+      .createQueryBuilder()
+      .insert()
+      .orIgnore()
+      .values(name)
+      .execute();
+
+    console.log(response)
+
+    return 'this.OrganisationRepository'
   }
 }
 
