@@ -8,27 +8,55 @@ class OrganisationUseCas implements OrganisationUseCase {
     this.OrganisationRepository = organisationRepository
    }
 
-  list(): any {
+  public list(): any {
     if (this.OrganisationRepository) {
       console.log('')
     }
     return ''
   }
 
-  async create(request: express.Request): Promise<any> {
+  public async create(request: express.Request): Promise<any> {
     const { body } = request;
-    const name = body.map(content => ({ name: content.org_name }))
 
-    const response = await this.OrganisationRepository
-      .createQueryBuilder()
-      .insert()
-      .orIgnore()
-      .values(name)
-      .execute();
+    const sum = []
+    const response = this.payloadGenerator(body, sum)
 
-    console.log(response)
+    response.forEach(async response => {
+      const organizations = await this.OrganisationRepository
+        .createOrganisations('organisation', response.organisation)
+
+      const headquarter = await this.OrganisationRepository
+        .createOrganisations('organisation', response.name)
+
+      await this.OrganisationRepository
+        .createOrganisationBranch(headquarter, organizations)
+
+      console.log(response.name, headquarter)
+      console.log(organizations, '\n')
+    })
 
     return 'this.OrganisationRepository'
+  }
+
+  private payloadGenerator(body, sum) {
+    const { org_name: name, daughters } = body
+
+    if (!name || name && !daughters) {
+        return sum
+    }
+
+    const organisation = daughters.map(daughter => daughter.org_name)
+    sum.push({ name, organisation })
+
+    this.handleDaughter(daughters, sum)
+    return sum
+  }
+
+  private handleDaughter(daughters, sum) {
+    for (let index = 0; index < daughters.length; index++) {
+      const daughter = daughters[index]
+      this.payloadGenerator(daughter, sum)
+    }
   }
 }
 

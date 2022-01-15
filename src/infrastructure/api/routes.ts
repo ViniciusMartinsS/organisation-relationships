@@ -1,12 +1,12 @@
 import { Request, Response, Router } from 'express'
-import OrganisationHandl from '../../handler/organisation.handler'
+import { OrganisationHandler } from '../../domain/organisation.interface'
 
 const router = Router()
 
 export class Routes {
-  private Handler: OrganisationHandl
+  private Handler: OrganisationHandler
 
-  constructor(Handler: OrganisationHandl) {
+  constructor(Handler: OrganisationHandler) {
     this.Handler = Handler
   }
 
