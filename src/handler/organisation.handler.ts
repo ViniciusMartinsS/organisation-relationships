@@ -1,33 +1,40 @@
-import express from 'express';
-
-import { Handler, UseCase, Validator } from '../domain/organisation.interface';
+import express from 'express'
+import {
+  Handler,
+  UseCase,
+  Validator
+} from "../domain/organisation.interface"
 
 class OrganisationHandler implements Handler {
-  private organisationUseCase: UseCase;
-  private schemaValidator: Validator;
+  private organisationUseCase: UseCase
+  private schemaValidator: Validator
 
-  public constructor(organisationUseCase: UseCase, schemaValidator: Validator) {
-    this.organisationUseCase = organisationUseCase;
-    this.schemaValidator = schemaValidator;
+  public constructor(
+    organisationUseCase: UseCase,
+    schemaValidator: Validator
+  ) {
+    this.organisationUseCase = organisationUseCase
+    this.schemaValidator = schemaValidator
   }
 
   public list(request: express.Request): any {
-    const {
-      params: { id },
-    } = request;
+    const { params: { id } } = request
 
-    return this.organisationUseCase.list(id);
+    return this.organisationUseCase
+      .list(id)
   }
 
   public create(request: express.Request): any {
     try {
-      this.schemaValidator.validate(request);
+      this.schemaValidator
+        .validate(request)
 
-      return this.organisationUseCase.create(request);
+      return this.organisationUseCase
+        .create(request)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 }
 
-export default OrganisationHandler;
+export default OrganisationHandler
