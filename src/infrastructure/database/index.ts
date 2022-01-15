@@ -15,7 +15,7 @@ class Database {
     this.configuration = { host, user, password, database }
   }
 
-  async initialize(): Promise<Connection> {
+  public async initialize(): Promise<Connection> {
     try {
       return createConnection(this.configuration)
     } catch (error) {

@@ -1,15 +1,15 @@
 import express from 'express'
 
-export interface OrganisationHandler {
+export interface Handler {
   create(request: express.Request): any,
   list(request: express.Request): any
 }
 
-export interface OrganisationUseCase {
+export interface UseCase {
   create(request: express.Request): any,
   list(organisation: string): any
 }
 
-export interface SchemaValidato {
-  validate(request: express.Request)
+export interface Validator {
+  validate(request: express.Request): void
 }

@@ -1,7 +1,7 @@
 import express from 'express'
-import { OrganisationUseCase } from "../domain/organisation.interface"
+import { UseCase } from "../domain/organisation.interface"
 
-class OrganisationUseCas implements OrganisationUseCase {
+class OrganisationUseCase implements UseCase {
   private OrganisationRepository: any
 
   constructor(organisationRepository: any) {
@@ -11,7 +11,7 @@ class OrganisationUseCas implements OrganisationUseCase {
   public async list(organisation: string): Promise<any> {
     const response = await this.OrganisationRepository
           .findByOrganisation(organisation)
-
+    console.log(response)
     return response
   }
 
@@ -62,4 +62,4 @@ class OrganisationUseCas implements OrganisationUseCase {
 }
 
 
-export default OrganisationUseCas
+export default OrganisationUseCase

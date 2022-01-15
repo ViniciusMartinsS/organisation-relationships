@@ -1,30 +1,30 @@
 import { Request, Response, Router } from 'express'
-import { OrganisationHandler } from '../../domain/organisation.interface'
+import { Handler } from '../../domain/organisation.interface'
 
 const router = Router()
 
 export class Routes {
-  private Handler: OrganisationHandler
+  private handler: Handler
 
-  constructor(Handler: OrganisationHandler) {
-    this.Handler = Handler
+  constructor(Handler: Handler) {
+    this.handler = Handler
   }
 
   public Organisation(): Router {
     router.route('/:id?')
       .get(async (request: Request, response: Response) =>
-              this.handler('list', request, response))
+              this.requestHandler('list', request, response))
       .post(async (request: Request, response: Response) =>
-              this.handler('create', request, response))
+              this.requestHandler('create', request, response))
 
     return router
   }
 
-  private async handler(
+  private async requestHandler(
     type: string, request: Request, response: Response
   ): Promise<void> {
     try {
-      await this.Handler[type](request)
+      await this.handler[type](request)
 
       response.status(200)
         .send('Hello World')

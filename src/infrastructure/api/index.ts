@@ -1,7 +1,7 @@
 import express from 'express'
 
-import OrganisationHandl from '../../handler/organisation.handler'
-import OrganisationUseCas from '../../usecase/organisation.usecase'
+import OrganisationHandler from '../../handler/organisation.handler'
+import OrganisationUseCase from '../../usecase/organisation.usecase'
 import SchemaValidator from './schema';
 import Database from '../database';
 import { Routes } from './routes';
@@ -22,10 +22,10 @@ database.initialize()
       new OrganisationRepository(connection)
 
     const UseCase =
-      new OrganisationUseCas(organisationRepository)
+      new OrganisationUseCase(organisationRepository)
 
     const Handler =
-      new OrganisationHandl(UseCase, Validator)
+      new OrganisationHandler(UseCase, Validator)
 
     const routes =
       new Routes(Handler)

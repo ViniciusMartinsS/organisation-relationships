@@ -1,36 +1,36 @@
 import express from 'express'
 
 import {
-  OrganisationHandler,
-  OrganisationUseCase,
-  SchemaValidato
+  Handler,
+  UseCase,
+  Validator
 } from "../domain/organisation.interface"
 
-class OrganisationHandl implements OrganisationHandler {
-  private OrganisationUseCase: OrganisationUseCase
-  private schemaValidator: SchemaValidato
+class OrganisationHandler implements Handler {
+  private organisationUseCase: UseCase
+  private schemaValidator: Validator
 
   constructor(
-    organisationUseCase: OrganisationUseCase,
-    schemaValidator: SchemaValidato
+    organisationUseCase: UseCase,
+    schemaValidator: Validator
   ) {
-    this.OrganisationUseCase = organisationUseCase
+    this.organisationUseCase = organisationUseCase
     this.schemaValidator = schemaValidator
    }
 
-  list(request: express.Request): any {
+  public list(request: express.Request): any {
     const { params: { id } } = request
 
-    return this.OrganisationUseCase
+    return this.organisationUseCase
       .list(id)
   }
 
-  create(request: express.Request): any {
+  public create(request: express.Request): any {
     try {
       this.schemaValidator
         .validate(request)
 
-      return this.OrganisationUseCase
+      return this.organisationUseCase
         .create(request)
     } catch (error) {
       console.log(error)
@@ -38,4 +38,4 @@ class OrganisationHandl implements OrganisationHandler {
   }
 }
 
-export default OrganisationHandl
+export default OrganisationHandler
