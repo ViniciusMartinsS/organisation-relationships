@@ -37,7 +37,7 @@ async function initialize(): Promise<void> {
 
     app.use('/organisation', routes.Organisation());
 
-    console.log('All dependencies initialized!')
+    console.log('All dependencies initialized!\n')
   } catch (error) {
     console.log('It was not possible to start the application.', error)
   }

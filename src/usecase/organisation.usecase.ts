@@ -28,21 +28,17 @@ class OrganisationUseCase implements UseCase {
       const response = this.payloadGenerator(body, sum);
 
       response.forEach(async (response: any) => {
-        const organizations = await this.OrganisationRepository.createOrganisations(
-          response.organisation,
-        );
+        const organizations = await this.OrganisationRepository
+          .createOrganisations(response.organisation);
 
-        const headquarter = await this.OrganisationRepository.createOrganisations(
-          response.name,
-        );
+        const headquarter = await this.OrganisationRepository
+          .createOrganisations(response.name);
 
-        await this.OrganisationRepository.createOrganisationBranch(
-          headquarter,
-          organizations,
-        );
+        await this.OrganisationRepository
+          .createOrganisationBranch(headquarter, organizations);
       });
-      return 'this.OrganisationRepository';
 
+      return `The registers were successfully saved!`;
     } catch (error) {
       console.log('Hi', error);
     }
