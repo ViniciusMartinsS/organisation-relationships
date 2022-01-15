@@ -7,19 +7,19 @@ class OrganisationRepository {
     this.connection = connection
   }
 
-  public async createOrganisations(table: string, content: any): Promise<any> {
+  public async createOrganisations(content: Array<number> | number): Promise<any> {
     content = !Array.isArray(content) ? [ content ] : content
 
     const sanitize_ = content.map(value => `("${value}")`).join(" ,")
 
-    const query = `INSERT IGNORE INTO ${table}(name) VALUES${sanitize_};`
+    const query = `INSERT IGNORE INTO organisation(name) VALUES${sanitize_};`
 
     await this.connection
       .query(query) as any
 
     const sanitize = content.map(value => `"${value}"`).join(" ,")
 
-    const select = `SELECT id FROM ${table} WHERE name IN (${sanitize});`
+    const select = `SELECT id FROM organisation WHERE name IN (${sanitize});`
 
     const [ organizations ] = await this.connection
       .query(select, content) as any
@@ -27,7 +27,9 @@ class OrganisationRepository {
     return organizations.map(({ id }): number => id)
   }
 
-  public async createOrganisationBranch([ headquarter ]: Array<number>, branches: Array<number>): Promise<void> {
+  public async createOrganisationBranch(
+    [ headquarter ]: Array<number>, branches: Array<number>
+  ): Promise<void> {
     let query = `INSERT IGNORE INTO organisation_branch(headquarter_id, branch_id) VALUES`
 
     branches.forEach((branch: number): void => {

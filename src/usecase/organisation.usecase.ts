@@ -22,17 +22,18 @@ class OrganisationUseCas implements OrganisationUseCase {
     const response = this.payloadGenerator(body, sum)
 
     response.forEach(async response => {
-      const organizations = await this.OrganisationRepository
-        .createOrganisations('organisation', response.organisation)
+      try {
+        const organizations = await this.OrganisationRepository
+          .createOrganisations(response.organisation)
 
-      const headquarter = await this.OrganisationRepository
-        .createOrganisations('organisation', response.name)
+        const headquarter = await this.OrganisationRepository
+          .createOrganisations(response.name)
 
-      await this.OrganisationRepository
-        .createOrganisationBranch(headquarter, organizations)
-
-      console.log(response.name, headquarter)
-      console.log(organizations, '\n')
+        await this.OrganisationRepository
+          .createOrganisationBranch(headquarter, organizations)
+      } catch (error) {
+        console.log(error)
+      }
     })
 
     return 'this.OrganisationRepository'
