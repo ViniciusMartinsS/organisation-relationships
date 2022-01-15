@@ -18,21 +18,27 @@ const app = express();
 })();
 
 async function initialize(): Promise<void> {
-  const database = new Database();
-  const connection = await database.initialize();
+  try {
+    const database = new Database();
+    const connection = await database.initialize();
 
-  const organisationRepository = new OrganisationRepository(connection);
+    const organisationRepository = new OrganisationRepository(connection);
 
-  const organisationUseCase = new OrganisationUseCase(organisationRepository);
+    const organisationUseCase = new OrganisationUseCase(organisationRepository);
 
-  const schemaValidator = new SchemaValidator();
+    const schemaValidator = new SchemaValidator();
 
-  const organisationHandler = new OrganisationHandler(
-    organisationUseCase,
-    schemaValidator,
-  );
+    const organisationHandler = new OrganisationHandler(
+      organisationUseCase,
+      schemaValidator
+    );
 
-  const routes = new Routes(organisationHandler);
+    const routes = new Routes(organisationHandler);
 
-  app.use('/organisation', routes.Organisation());
+    app.use('/organisation', routes.Organisation());
+
+    console.log('All dependencies initialized!')
+  } catch (error) {
+    console.log('It was not possible to start the application.', error)
+  }
 }

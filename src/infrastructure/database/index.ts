@@ -15,11 +15,7 @@ class Database {
   }
 
   public async initialize(): Promise<Connection> {
-    try {
-      return createConnection(this.configuration);
-    } catch (error) {
-      console.log(error);
-    }
+    return createConnection(this.configuration);
   }
 }
 

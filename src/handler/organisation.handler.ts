@@ -18,10 +18,17 @@ class OrganisationHandler implements Handler {
   }
 
   public list(request: express.Request): any {
-    const { params: { id } } = request;
+    try {
+      // this.schemaValidator
+      //.validate(request);
 
-    return this.organisationUseCase
-      .list(id);
+      const { params: { id } } = request;
+
+      return this.organisationUseCase
+        .list(id);
+    } catch (error) {
+      console.log('Hi', error);
+    }
   }
 
   public create(request: express.Request): any {
@@ -32,7 +39,7 @@ class OrganisationHandler implements Handler {
       return this.organisationUseCase
         .create(request);
     } catch (error) {
-      console.log(error);
+      console.log('Hi', error);
     }
   }
 }

@@ -14,61 +14,71 @@ class OrganisationRepository implements Repository {
   public async createOrganisations(
     content: Array<number> | number
   ): Promise<any> {
-    content = !Array.isArray(content) ? [ content ] : content;
+    try {
+      content = !Array.isArray(content) ? [ content ] : content;
 
-    const sanitize_ = content.map((value: any) => `("${value}")`).join(' ,');
+      const sanitize_ = content.map((value: any) => `("${value}")`).join(' ,');
+      const query = `INSERT IGNORE INTO organisation(name) VALUES${sanitize_};`;
 
-    const query = `INSERT IGNORE INTO organisation(name) VALUES${sanitize_};`;
+      await this.connection.query(query) as any;
 
-    await this.connection.query(query) as any;
+      const select = `SELECT id FROM organisation WHERE name IN (${sanitize(content)});`;
+      const [ organizations ] = await this.connection.query(select, content) as any;
 
-    const select = `SELECT id FROM organisation WHERE name IN (${sanitize(content)});`;
-
-    const [ organizations ] = await this.connection.query(select, content) as any;
-
-    return organizations.map(({ id }): number => id);
+      return organizations.map(({ id }): number => id);
+    } catch (error) {
+      console.log('Hi', error);
+    }
   }
 
   public async createOrganisationBranch(
     [ headquarter ]: Array<number>,
     branches: Array<number>
   ): Promise<void> {
-    let query = `INSERT IGNORE INTO organisation_branch(headquarter_id, branch_id) VALUES`;
+    try {
+      let query = `INSERT IGNORE INTO organisation_branch(headquarter_id, branch_id) VALUES`;
 
-    branches.forEach((branch: number): void => {
-      query = `${query} (${headquarter}, ${branch}),`;
-    });
+      branches.forEach((branch: number): void => {
+        query = `${query} (${headquarter}, ${branch}),`;
+      });
 
-    query = query.slice(0, -1);
+      query = query.slice(0, -1);
 
-    await this.connection.query(query) as any;
+      await this.connection.query(query) as any;
+    } catch (error) {
+      console.log('Hi', error);
+    }
   }
 
   public async findByOrganisation(organisation: string): Promise<any> {
-    const promises = [];
+    try {
+      const promises = [];
 
-    let query = this.prepareFindQuery(organisation, 'branch');
-    promises.push(this.connection.query(query));
+      let query = this.prepareFindQuery(organisation, 'branch');
+      promises.push(this.connection.query(query));
 
-    query = this.prepareFindQuery(organisation, 'headquarter');
-    promises.push(this.connection.query(query));
+      query = this.prepareFindQuery(organisation, 'headquarter');
+      promises.push(this.connection.query(query));
 
-    const [ [ branches ], [ headquarters ] ] = await Promise.all(promises);
+      const [ [ branches ], [ headquarters ] ] = await Promise.all(promises);
 
-    if (!headquarters?.length) {
-      return { branches };
+      if (!headquarters?.length) {
+        return { branches };
+      }
+
+      const parent = headquarters.map(({ name }) => name);
+
+      query = this.prepareFindQuery(parent, 'branch', organisation);
+      const [ sisters ] = (await this.connection.query(query)) as any;
+
+      if (!sisters?.length) {
+        return { branches, headquarters };
+      }
+
+      return { branches, headquarters, ...(sisters.length && { sisters }) };
+    } catch (error) {
+      console.log('Hi', error);
     }
-
-    const parent = headquarters.map(({ name }) => name);
-
-    query = this.prepareFindQuery(parent, 'branch', organisation);
-    const [ sisters ] = (await this.connection.query(query)) as any;
-
-    if (!sisters?.length) {
-      return { branches, headquarters };
-    }
-
-    return { branches, headquarters, ...(sisters.length && { sisters }) };
   }
 
   private prepareFindQuery(

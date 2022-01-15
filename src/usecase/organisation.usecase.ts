@@ -9,21 +9,25 @@ class OrganisationUseCase implements UseCase {
   }
 
   public async list(organisation: string): Promise<any> {
-    const response = await this.OrganisationRepository.findByOrganisation(
-      organisation,
-    );
+    try {
+      const response = await this.OrganisationRepository.findByOrganisation(
+        organisation,
+      );
 
-    return response;
+      return response;
+    } catch (error) {
+      console.log('Hi', error);
+    }
   }
 
   public async create(request: express.Request): Promise<any> {
-    const { body } = request;
+    try {
+      const { body } = request;
 
-    const sum = [];
-    const response = this.payloadGenerator(body, sum);
+      const sum = [];
+      const response = this.payloadGenerator(body, sum);
 
-    response.forEach(async (response: any) => {
-      try {
+      response.forEach(async (response: any) => {
         const organizations = await this.OrganisationRepository.createOrganisations(
           response.organisation,
         );
@@ -36,12 +40,12 @@ class OrganisationUseCase implements UseCase {
           headquarter,
           organizations,
         );
-      } catch (error) {
-        console.log(error);
-      }
-    });
+      });
+      return 'this.OrganisationRepository';
 
-    return 'this.OrganisationRepository';
+    } catch (error) {
+      console.log('Hi', error);
+    }
   }
 
   private payloadGenerator(body, sum): Array<any> {
