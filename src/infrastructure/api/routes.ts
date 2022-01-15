@@ -26,7 +26,7 @@ class Routes {
   private async requestHandler(
     type: string,
     request: Request,
-    response: Response,
+    response: Response
   ): Promise<void> {
     try {
       await this.handler[type](request);

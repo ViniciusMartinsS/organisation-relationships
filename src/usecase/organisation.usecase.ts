@@ -22,7 +22,7 @@ class OrganisationUseCase implements UseCase {
     const sum = [];
     const response = this.payloadGenerator(body, sum);
 
-    response.forEach(async (response) => {
+    response.forEach(async (response: any) => {
       try {
         const organizations = await this.OrganisationRepository.createOrganisations(
           response.organisation,
@@ -51,7 +51,7 @@ class OrganisationUseCase implements UseCase {
       return sum;
     }
 
-    const organisation = daughters.map((daughter) => daughter.org_name);
+    const organisation = daughters.map((daughter: any) => daughter.org_name);
     sum.push({ name, organisation });
 
     this.handleDaughter(daughters, sum);

@@ -8,9 +8,8 @@ class Database {
   public constructor() {
     const configurationFile = readFileSync(FILE_PATH, 'utf-8');
 
-    const { host, username: user, password, database } = JSON.parse(
-      configurationFile,
-    );
+    const { host, username: user, password, database }
+      = JSON.parse(configurationFile);
 
     this.configuration = { host, user, password, database };
   }

@@ -2,7 +2,7 @@ import { Connection } from 'mysql2/promise';
 import { Repository } from '../../domain/organisation.interface';
 
 const sanitize = (content: Array<number | string>): string =>
-  content.map((value) => `"${value}"`).join(' ,');
+  content.map((value: any) => `"${value}"`).join(' ,');
 
 class OrganisationRepository implements Repository {
   private connection: Connection;
@@ -12,31 +12,26 @@ class OrganisationRepository implements Repository {
   }
 
   public async createOrganisations(
-    content: Array<number> | number,
+    content: Array<number> | number
   ): Promise<any> {
-    content = !Array.isArray(content) ? [content] : content;
+    content = !Array.isArray(content) ? [ content ] : content;
 
-    const sanitize_ = content.map((value) => `("${value}")`).join(' ,');
+    const sanitize_ = content.map((value: any) => `("${value}")`).join(' ,');
 
     const query = `INSERT IGNORE INTO organisation(name) VALUES${sanitize_};`;
 
-    (await this.connection.query(query)) as any;
+    await this.connection.query(query) as any;
 
-    const select = `SELECT id FROM organisation WHERE name IN (${sanitize(
-      content,
-    )});`;
+    const select = `SELECT id FROM organisation WHERE name IN (${sanitize(content)});`;
 
-    const [organizations] = (await this.connection.query(
-      select,
-      content,
-    )) as any;
+    const [ organizations ] = await this.connection.query(select, content) as any;
 
     return organizations.map(({ id }): number => id);
   }
 
   public async createOrganisationBranch(
-    [headquarter]: Array<number>,
-    branches: Array<number>,
+    [ headquarter ]: Array<number>,
+    branches: Array<number>
   ): Promise<void> {
     let query = `INSERT IGNORE INTO organisation_branch(headquarter_id, branch_id) VALUES`;
 
@@ -46,7 +41,7 @@ class OrganisationRepository implements Repository {
 
     query = query.slice(0, -1);
 
-    (await this.connection.query(query)) as any;
+    await this.connection.query(query) as any;
   }
 
   public async findByOrganisation(organisation: string): Promise<any> {
@@ -58,7 +53,7 @@ class OrganisationRepository implements Repository {
     query = this.prepareFindQuery(organisation, 'headquarter');
     promises.push(this.connection.query(query));
 
-    const [[branches], [headquarters]] = await Promise.all(promises);
+    const [ [ branches ], [ headquarters ] ] = await Promise.all(promises);
 
     if (!headquarters?.length) {
       return { branches };
@@ -67,7 +62,7 @@ class OrganisationRepository implements Repository {
     const parent = headquarters.map(({ name }) => name);
 
     query = this.prepareFindQuery(parent, 'branch', organisation);
-    const [sisters] = (await this.connection.query(query)) as any;
+    const [ sisters ] = (await this.connection.query(query)) as any;
 
     if (!sisters?.length) {
       return { branches, headquarters };
@@ -79,14 +74,10 @@ class OrganisationRepository implements Repository {
   private prepareFindQuery(
     organisation: string | Array<string>,
     type: string,
-    current_organization: string | Array<string> = organisation,
+    current_organization: string | Array<string> = organisation
   ): string {
-    const FIRST_JOIN = { headquarter: 'branch_id', branch: 'headquarter_id' }[
-      type
-    ];
-    const SECOND_JOIN = { headquarter: 'headquarter_id', branch: 'branch_id' }[
-      type
-    ];
+    const FIRST_JOIN = { headquarter: 'branch_id', branch: 'headquarter_id' }[ type ];
+    const SECOND_JOIN = { headquarter: 'headquarter_id', branch: 'branch_id' }[ type ];
 
     const WHERE_NAME = !Array.isArray(organisation)
       ? `o.name = "${organisation}"`
