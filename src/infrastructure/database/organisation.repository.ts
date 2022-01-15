@@ -81,7 +81,7 @@ class OrganisationRepository {
       ? `o.name = "${organisation}"`
       : `o.name IN (${sanitize(organisation)})`
 
-    return ` SELECT oo.name FROM organisation AS o
+    return ` SELECT DISTINCT oo.name FROM organisation AS o
       RIGHT JOIN organisation_branch AS ob
       ON o.id = ob.${FIRST_JOIN}
       LEFT JOIN organisation AS oo

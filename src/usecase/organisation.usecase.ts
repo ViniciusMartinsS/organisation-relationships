@@ -9,11 +9,10 @@ class OrganisationUseCas implements OrganisationUseCase {
    }
 
   public async list(organisation: string): Promise<any> {
-     await this.OrganisationRepository
+    const response = await this.OrganisationRepository
           .findByOrganisation(organisation)
 
-    // console.log(response)
-    return 'sss'
+    return response
   }
 
   public async create(request: express.Request): Promise<any> {
