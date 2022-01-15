@@ -18,9 +18,11 @@ class OrganisationHandl implements OrganisationHandler {
     this.schemaValidator = schemaValidator
    }
 
-  list(): any {
+  list(request: express.Request): any {
+    const { params: { id } } = request
+
     return this.OrganisationUseCase
-      .list()
+      .list(id)
   }
 
   create(request: express.Request): any {
