@@ -1,5 +1,7 @@
 import { Connection } from 'mysql2/promise';
 
+const sanitize = content => content.map(value => `"${value}"`).join(" ,")
+
 class OrganisationRepository {
   private connection: Connection
 
@@ -17,9 +19,7 @@ class OrganisationRepository {
     await this.connection
       .query(query) as any
 
-    const sanitize = content.map(value => `"${value}"`).join(" ,")
-
-    const select = `SELECT id FROM organisation WHERE name IN (${sanitize});`
+    const select = `SELECT id FROM organisation WHERE name IN (${sanitize(content)});`
 
     const [ organizations ] = await this.connection
       .query(select, content) as any
@@ -53,35 +53,40 @@ class OrganisationRepository {
 
     const [ [ branches ], [ headquarters ] ] = await Promise.all(promises)
 
-    if (!headquarters.length){
+    if (!headquarters?.length){
       return { branches }
     }
 
-    const parent = headquarters.map(({ name }) => {
-      const query = this.prepareFindQuery(name, 'branch', organisation)
-      return this.connection.query(query)
-    })
+    const parent = headquarters.map(({ name }) => name)
 
-    const [ sisters ] = await Promise.all(parent)as any
-    console.log(sisters)
+    query = this.prepareFindQuery(parent, 'branch', organisation)
+    const [ sisters ] = await this.connection.query(query) as any
 
-    return { branches, headquarters } // ...(sisters.length && { sisters })
+    if (!sisters?.length){
+      return { branches, headquarters }
+    }
+
+    return { branches, headquarters, ...(sisters.length && { sisters }) }
   }
 
   private prepareFindQuery(
-    organisation: string,
+    organisation: string | Array<string>,
     type: string,
-    current_organization: string = organisation
+    current_organization: string | Array<string> = organisation
   ): string {
     const FIRST_JOIN = { headquarter: 'branch_id', branch: 'headquarter_id' }[type]
     const SECOND_JOIN = { headquarter: 'headquarter_id', branch: 'branch_id' }[type]
+
+    const WHERE_NAME = !Array.isArray(organisation)
+      ? `o.name = "${organisation}"`
+      : `o.name IN (${sanitize(organisation)})`
 
     return ` SELECT oo.name FROM organisation AS o
       RIGHT JOIN organisation_branch AS ob
       ON o.id = ob.${FIRST_JOIN}
       LEFT JOIN organisation AS oo
       ON ob.${SECOND_JOIN} = oo.id
-      WHERE o.name = "${organisation}" AND oo.name != "${current_organization}";
+      WHERE ${WHERE_NAME} AND oo.name != "${current_organization}";
     `
   }
 }
