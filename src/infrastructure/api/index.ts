@@ -4,8 +4,9 @@ import OrganisationHandl from '../../handler/organisation.handler'
 import OrganisationUseCas from '../../usecase/organisation.usecase'
 import SchemaValidator from './schema';
 import Database from '../database';
-import { Organisation } from '../database/entity';
 import { Routes } from './routes';
+import { Connection } from 'mysql2/promise';
+import OrganisationRepository from '../database/organisation.repository';
 
 const app = express()
 
@@ -16,9 +17,8 @@ const Validator = new SchemaValidator()
 const database = new Database()
 
 database.initialize()
-  .then(connection => {
-    const organisationRepository
-        = connection.getRepository(Organisation)
+  .then(async (connection: Connection) => {
+    const organisationRepository = new OrganisationRepository(connection)
 
     const UseCase
         = new OrganisationUseCas(organisationRepository)
