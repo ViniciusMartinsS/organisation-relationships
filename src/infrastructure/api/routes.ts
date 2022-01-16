@@ -36,7 +36,7 @@ class Routes {
       const result = await this.handler[type](payload)
 
       return response.status(200)
-        .send({ status: true, ...result });
+        .send({ status: true, result });
     } catch (error) {
       console.log(error)
       response.status(500)

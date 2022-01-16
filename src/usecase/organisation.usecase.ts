@@ -63,7 +63,7 @@ class OrganisationUseCase implements UseCase {
           daughters: branches.length,
           total: headquarters.length + branches.length
         },
-        result: payload
+        rows: payload
       };
 
       return result;
