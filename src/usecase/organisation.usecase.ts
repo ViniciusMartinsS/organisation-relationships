@@ -1,5 +1,6 @@
 import {
   CreatePayload,
+  CreateReturn,
   ListReturn,
   Repository,
   SanitatedPayload,
@@ -24,7 +25,7 @@ class OrganisationUseCase implements UseCase {
     }
   }
 
-  public async create(payload: CreatePayload): Promise<any> {
+  public async create(payload: CreatePayload): Promise<CreateReturn> {
     try {
       const sanitizePayloadArray = [];
       const sanitizedPayload =

@@ -1,3 +1,9 @@
+interface count {
+  organisation: number;
+  daughters: number;
+  total: number;
+}
+
 export interface CreatePayload {
   org_name: string;
   daughters: Array<CreatePayload>;
@@ -7,13 +13,19 @@ export interface ListReturn {
   org_name: string;
   relationship_type: string;
 }
+
+export interface CreateReturn {
+  count: count;
+  rows: CreatePayload
+}
+
 export interface Handler {
-  create(payload: CreatePayload): any;
+  create(payload: CreatePayload): Promise<CreateReturn>;
   list(organisation: string, offset?: number): Promise<ListReturn>;
 }
 
 export interface UseCase {
-  create(payload: CreatePayload): any;
+  create(payload: CreatePayload): Promise<CreateReturn>;
   list(organisation: string, offset?: number): Promise<ListReturn>;
 }
 

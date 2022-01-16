@@ -1,4 +1,4 @@
-import { CreatePayload, ListReturn } from '../domain/organisation.interface';
+import { CreatePayload, CreateReturn, ListReturn } from '../domain/organisation.interface';
 import { Handler, UseCase, Validator } from "../domain/organisation.interface";
 
 class OrganisationHandler implements Handler {
@@ -23,7 +23,7 @@ class OrganisationHandler implements Handler {
     }
   }
 
-  public create(payload: CreatePayload): any {
+  public create(payload: CreatePayload): Promise<CreateReturn> {
     try {
       this.schemaValidator
         .validate(payload);
