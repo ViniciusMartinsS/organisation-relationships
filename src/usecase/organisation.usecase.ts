@@ -20,19 +20,36 @@ class OrganisationUseCase implements UseCase {
 
   public async create(payload: CreatePayload): Promise<any> {
     try {
-      const sum = [];
-      const response = this.payloadGenerator(payload, sum);
+      const sanitizePayloadArray = [];
+      const sanitizedPayload =
+        this.sanitizePayload(payload, sanitizePayloadArray);
 
-      response.forEach(async (response: any) => {
-        const organizations = await this.OrganisationRepository
-          .createOrganisations(response.organisation);
+      const headquarters = [];
+      const branches = [];
 
-        const headquarter = await this.OrganisationRepository
-          .createOrganisations(response.name);
+      for (let index = 0; index < sanitizedPayload.length; index++) {
+        const { name, organisation } = sanitizedPayload[index];
 
-        await this.OrganisationRepository
-          .createOrganisationBranch(headquarter, organizations);
-      });
+        const queryHeadquarters = this.OrganisationRepository
+          .createOrganisations(name);
+        headquarters.push(queryHeadquarters);
+
+        const queryBranches = this.OrganisationRepository
+          .createOrganisations(organisation);
+        branches.push(queryBranches);
+      }
+
+      const headquarter = await Promise.all(headquarters);
+      const branch = await Promise.all(branches);
+
+      const headquartersAndBranches = [];
+      for (let index = 0; index < headquarter.length; index++) {
+        const query = this.OrganisationRepository
+          .createOrganisationBranch(headquarter[index], branch[index]);
+        headquartersAndBranches.push(query);
+      }
+
+      await Promise.all(headquartersAndBranches)
 
       return `The registers were successfully saved!`;
     } catch (error) {
@@ -40,24 +57,24 @@ class OrganisationUseCase implements UseCase {
     }
   }
 
-  private payloadGenerator(payload, sum): Array<any> {
+  private sanitizePayload(payload, sanitizePayloadArray): Array<any> {
     const { org_name: name, daughters } = payload;
 
     if (!name || (name && !daughters)) {
-      return sum;
+      return sanitizePayloadArray;
     }
 
     const organisation = daughters.map((daughter: any) => daughter.org_name);
-    sum.push({ name, organisation });
+    sanitizePayloadArray.push({ name, organisation });
 
-    this.handleDaughter(daughters, sum);
-    return sum;
+    this.handleDaughter(daughters, sanitizePayloadArray);
+    return sanitizePayloadArray;
   }
 
-  private handleDaughter(daughters, sum): void {
+  private handleDaughter(daughters, sanitizePayloadArray): void {
     for (let index = 0; index < daughters.length; index++) {
       const daughter = daughters[index];
-      this.payloadGenerator(daughter, sum);
+      this.sanitizePayload(daughter, sanitizePayloadArray);
     }
   }
 }
