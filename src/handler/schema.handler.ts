@@ -1,5 +1,5 @@
-import { CreatePayload, Validator } from '../../domain/organisation.interface';
-import { ORGANISATION_SCHEMA } from '../constants';
+import { CreatePayload, Validator } from "../domain/organisation.interface";
+import { ORGANISATION_SCHEMA } from "./constants.handler";
 
 class SchemaValidator implements Validator {
   public validate(payload: CreatePayload): void {

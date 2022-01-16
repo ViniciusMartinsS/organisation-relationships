@@ -4,7 +4,7 @@ import OrganisationHandler from '../../handler/organisation.handler';
 import OrganisationUseCase from '../../usecase/organisation.usecase';
 import OrganisationRepository from '../database/organisation.repository';
 import Routes from './routes';
-import SchemaValidator from './schema';
+import SchemaValidator from '../../handler/schema.handler';
 
 const app = express();
 
