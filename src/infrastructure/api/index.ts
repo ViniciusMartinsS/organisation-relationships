@@ -1,20 +1,22 @@
+import 'dotenv/config'
 import express from 'express';
 import Database from '../database';
 import OrganisationHandler from '../../handler/organisation.handler';
 import OrganisationUseCase from '../../usecase/organisation.usecase';
 import OrganisationRepository from '../database/organisation.repository';
-import Routes from './routes';
+import Routes from './routes.api';
 import SchemaValidator from '../../handler/schema.handler';
 
 const app = express();
+const PORT = process.env.PORT;
 
 (async (): Promise<void> => {
-  app.use(express.json());
+  app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true }));
 
   await initialize();
 
-  app.listen(3000, () => console.log('APP Listening on 3000'));
+  app.listen(PORT, () => console.log(`APP Listening on ${PORT}`));
 })();
 
 async function initialize(): Promise<void> {
