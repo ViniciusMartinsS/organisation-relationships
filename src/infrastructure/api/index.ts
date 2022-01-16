@@ -35,7 +35,7 @@ async function initialize(): Promise<void> {
 
     const routes = new Routes(organisationHandler);
 
-    app.use('/organisation', routes.Organisation());
+    app.use('/organisation', routes.organisation());
 
     console.log('All dependencies initialized!\n')
   } catch (error) {

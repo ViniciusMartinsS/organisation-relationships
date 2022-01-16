@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs';
 import { createConnection, Connection } from 'mysql2/promise';
-import { DatabaseConfiguration } from '../infrastructure.interface';
+import { DatabaseClass, DatabaseConfiguration } from '../infrastructure.interface';
 
 const FILE_PATH = `${__dirname}/../../../../ormconfig.json`;
-class Database {
+class Database implements DatabaseClass {
   private configuration: DatabaseConfiguration;
 
   public constructor() {

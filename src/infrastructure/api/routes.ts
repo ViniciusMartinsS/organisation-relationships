@@ -1,16 +1,17 @@
 import { Request, Response, Router } from 'express';
 import { Handler } from '../../domain/organisation.interface';
+import { RouterClass } from '../infrastructure.interface';
 
 const router = Router();
 
-class Routes {
+class Routes implements RouterClass {
   private handler: Handler;
 
   public constructor(Handler: Handler) {
     this.handler = Handler;
   }
 
-  public Organisation(): Router {
+  public organisation(): Router {
     router
       .route('/:id?')
       .get(async (request: Request, response: Response) =>
