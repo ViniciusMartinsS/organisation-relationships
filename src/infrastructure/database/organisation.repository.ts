@@ -1,8 +1,8 @@
 import { Connection } from 'mysql2/promise';
-import { Repository } from '../../domain/organisation.interface';
+import { ListReturn, Repository } from '../../domain/organisation.interface';
 
 const sanitize = (content: Array<number | string>): string =>
-  content.map((value: any) => `"${value}"`).join(' ,');
+  content.map((value: string): string => `"${value}"`).join(' ,');
 
 class OrganisationRepository implements Repository {
   private connection: Connection;
@@ -11,13 +11,11 @@ class OrganisationRepository implements Repository {
     this.connection = connection;
   }
 
-  public async createOrganisations(
-    content: Array<number> | number
-  ): Promise<any> {
+  public async createOrganisations(content: Array<string> | string): Promise<any> {
     try {
       content = !Array.isArray(content) ? [ content ] : content;
 
-      const sanitize_ = content.map((value: any) => `("${value}")`).join(' ,');
+      const sanitize_ = content.map((value: string): string => `("${value}")`).join(' ,');
       const query = `INSERT IGNORE INTO organisation(name) VALUES${sanitize_};`;
 
       await this.connection
@@ -53,10 +51,10 @@ class OrganisationRepository implements Repository {
     }
   }
 
-  public async findByOrganisation(organisation: string, offset = 0): Promise<any> {
+  public async findByOrganisation(organisation: string, offset = 0): Promise<Array<ListReturn>> {
     try {
       const query = this.prepareFindQuery(organisation, offset);
-      console.log(query)
+
       return this.connection
         .query(query) as any;
     } catch (error) {

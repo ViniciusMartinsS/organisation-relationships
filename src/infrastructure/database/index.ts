@@ -1,9 +1,10 @@
 import { readFileSync } from 'fs';
 import { createConnection, Connection } from 'mysql2/promise';
+import { DatabaseConfiguration } from '../infrastructure.interface';
 
 const FILE_PATH = `${__dirname}/../../../../ormconfig.json`;
 class Database {
-  private configuration: any;
+  private configuration: DatabaseConfiguration;
 
   public constructor() {
     const configurationFile = readFileSync(FILE_PATH, 'utf-8');

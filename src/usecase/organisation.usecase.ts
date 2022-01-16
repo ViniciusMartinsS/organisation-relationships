@@ -1,4 +1,10 @@
-import { UseCase, Repository, CreatePayload } from '../domain/organisation.interface';
+import {
+  CreatePayload,
+  ListReturn,
+  Repository,
+  SanitatedPayload,
+  UseCase
+} from '../domain/organisation.interface';
 
 class OrganisationUseCase implements UseCase {
   private OrganisationRepository: Repository;
@@ -7,11 +13,11 @@ class OrganisationUseCase implements UseCase {
     this.OrganisationRepository = organisationRepository;
   }
 
-  public async list(organisation: string, offset?: number): Promise<any> {
+  public async list(organisation: string, offset?: number): Promise<ListReturn> {
     try {
       const [ response ] = await this.OrganisationRepository
         .findByOrganisation(organisation, offset);
-      console.log(response)
+
       return response;
     } catch (error) {
       console.log('Hi', error);
@@ -57,21 +63,27 @@ class OrganisationUseCase implements UseCase {
     }
   }
 
-  private sanitizePayload(payload, sanitizePayloadArray): Array<any> {
+  private sanitizePayload(
+    payload: CreatePayload,
+    sanitizePayloadArray: Array<SanitatedPayload>
+  ): Array<SanitatedPayload> {
     const { org_name: name, daughters } = payload;
 
     if (!name || (name && !daughters)) {
       return sanitizePayloadArray;
     }
 
-    const organisation = daughters.map((daughter: any) => daughter.org_name);
+    const organisation = daughters.map((daughter: CreatePayload): string => daughter.org_name);
     sanitizePayloadArray.push({ name, organisation });
 
     this.handleDaughter(daughters, sanitizePayloadArray);
     return sanitizePayloadArray;
   }
 
-  private handleDaughter(daughters, sanitizePayloadArray): void {
+  private handleDaughter(
+    daughters: CreatePayload[],
+    sanitizePayloadArray: Array<SanitatedPayload>
+  ): void {
     for (let index = 0; index < daughters.length; index++) {
       const daughter = daughters[index];
       this.sanitizePayload(daughter, sanitizePayloadArray);

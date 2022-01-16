@@ -1,23 +1,16 @@
-import { CreatePayload } from '../domain/organisation.interface';
-import {
-  Handler,
-  UseCase,
-  Validator
-} from "../domain/organisation.interface";
+import { CreatePayload, ListReturn } from '../domain/organisation.interface';
+import { Handler, UseCase, Validator } from "../domain/organisation.interface";
 
 class OrganisationHandler implements Handler {
   private organisationUseCase: UseCase;
   private schemaValidator: Validator;
 
-  public constructor(
-    organisationUseCase: UseCase,
-    schemaValidator: Validator
-  ) {
+  public constructor(organisationUseCase: UseCase, schemaValidator: Validator) {
     this.organisationUseCase = organisationUseCase;
     this.schemaValidator = schemaValidator;
   }
 
-  public list(organisation: string, offset?: number): any {
+  public async list(organisation: string, offset?: number): Promise<ListReturn> {
     try {
       if (!organisation) {
         throw new Error('Missing organisation');
