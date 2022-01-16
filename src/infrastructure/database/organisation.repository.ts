@@ -53,9 +53,10 @@ class OrganisationRepository implements Repository {
     }
   }
 
-  public async findByOrganisation(organisation: string): Promise<any> {
+  public async findByOrganisation(organisation: string, offset = 0): Promise<any> {
     try {
-      const query = this.prepareFindQuery(organisation);
+      const query = this.prepareFindQuery(organisation, offset);
+      console.log(query)
       return this.connection
         .query(query) as any;
     } catch (error) {
@@ -63,7 +64,7 @@ class OrganisationRepository implements Repository {
     }
   }
 
-  private prepareFindQuery(organisation: string): string {
+  private prepareFindQuery(organisation: string, offset: number): string {
     return `
     SELECT *
     FROM(
@@ -93,7 +94,7 @@ class OrganisationRepository implements Repository {
           WHERE organisation.name = "${organisation}"
       )
       AND o.name != "${organisation}"
-    ) RESULT ORDER BY org_name LIMIT 100 OFFSET 0;
+    ) RESULT ORDER BY org_name LIMIT 100 OFFSET ${offset};
   `;
   }
 }

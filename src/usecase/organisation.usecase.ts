@@ -1,5 +1,4 @@
-import express from 'express';
-import { UseCase, Repository } from '../domain/organisation.interface';
+import { UseCase, Repository, CreatePayload } from '../domain/organisation.interface';
 
 class OrganisationUseCase implements UseCase {
   private OrganisationRepository: Repository;
@@ -8,22 +7,21 @@ class OrganisationUseCase implements UseCase {
     this.OrganisationRepository = organisationRepository;
   }
 
-  public async list(organisation: string): Promise<any> {
+  public async list(organisation: string, offset?: number): Promise<any> {
     try {
       const [ response ] = await this.OrganisationRepository
-        .findByOrganisation(organisation);
+        .findByOrganisation(organisation, offset);
+      console.log(response)
       return response;
     } catch (error) {
       console.log('Hi', error);
     }
   }
 
-  public async create(request: express.Request): Promise<any> {
+  public async create(payload: CreatePayload): Promise<any> {
     try {
-      const { body } = request;
-
       const sum = [];
-      const response = this.payloadGenerator(body, sum);
+      const response = this.payloadGenerator(payload, sum);
 
       response.forEach(async (response: any) => {
         const organizations = await this.OrganisationRepository
@@ -42,8 +40,8 @@ class OrganisationUseCase implements UseCase {
     }
   }
 
-  private payloadGenerator(body, sum): Array<any> {
-    const { org_name: name, daughters } = body;
+  private payloadGenerator(payload, sum): Array<any> {
+    const { org_name: name, daughters } = payload;
 
     if (!name || (name && !daughters)) {
       return sum;

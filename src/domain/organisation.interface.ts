@@ -1,17 +1,19 @@
-import express from 'express';
-
+export interface CreatePayload {
+  org_name: string;
+  daughters: Array<CreatePayload>;
+}
 export interface Handler {
-  create(request: express.Request): any;
-  list(request: express.Request): any;
+  create(payload: CreatePayload): any;
+  list(organisation: string, offset?: number): any;
 }
 
 export interface UseCase {
-  create(request: express.Request): any;
-  list(organisation: string): any;
+  create(payload: CreatePayload): any;
+  list(organisation: string, offset?: number): any;
 }
 
 export interface Validator {
-  validate(request: express.Request): void;
+  validate(payload: CreatePayload): void;
 }
 
 export interface Repository {
@@ -20,5 +22,5 @@ export interface Repository {
     headquarter: Array<number>,
     branches: Array<number>,
   ): Promise<any>;
-  findByOrganisation(organisation: string): Promise<any>;
+  findByOrganisation(organisation: string, offset?: number): Promise<any>;
 }

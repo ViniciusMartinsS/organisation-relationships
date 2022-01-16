@@ -1,4 +1,4 @@
-import express from 'express';
+import { CreatePayload } from '../domain/organisation.interface';
 import {
   Handler,
   UseCase,
@@ -17,27 +17,26 @@ class OrganisationHandler implements Handler {
     this.schemaValidator = schemaValidator;
   }
 
-  public list(request: express.Request): any {
+  public list(organisation: string, offset?: number): any {
     try {
-      // this.schemaValidator
-      //.validate(request);
-
-      const { params: { id } } = request;
+      if (!organisation) {
+        throw new Error('Missing organisation');
+      }
 
       return this.organisationUseCase
-        .list(id);
+        .list(organisation, offset);
     } catch (error) {
       console.log('Hi', error);
     }
   }
 
-  public create(request: express.Request): any {
+  public create(payload: CreatePayload): any {
     try {
       this.schemaValidator
-        .validate(request);
+        .validate(payload);
 
       return this.organisationUseCase
-        .create(request);
+        .create(payload);
     } catch (error) {
       console.log('Hi', error);
     }

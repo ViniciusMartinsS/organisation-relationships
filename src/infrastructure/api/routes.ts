@@ -14,10 +14,10 @@ class Routes {
     router
       .route('/:id?')
       .get(async (request: Request, response: Response) =>
-        this.requestHandler('list', request, response),
+        this.requestHandler('list', request, response)
       )
       .post(async (request: Request, response: Response) =>
-        this.requestHandler('create', request, response),
+        this.requestHandler('create', request, response)
       );
 
     return router;
@@ -29,12 +29,17 @@ class Routes {
     response: Response
   ): Promise<void> {
     try {
-      const result = type === 'list'
-        ? await this.handler[type](request)
-        : 'Hello World'
+      const payload = type === 'list'
+        ? request.params.id
+        : request.body;
+
+      const result = await this.handler[type](payload)
+      const show = type === 'list'
+        ? result
+        : 'Hello World';
 
       response.status(200)
-        .send(result);
+        .send(show);
     } catch (error) {
       console.log(error)
       response.status(500)
