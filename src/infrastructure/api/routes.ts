@@ -29,11 +29,16 @@ class Routes {
     response: Response
   ): Promise<void> {
     try {
-      await this.handler[type](request);
+      const result = type === 'list'
+        ? await this.handler[type](request)
+        : 'Hello World'
 
-      response.status(200).send('Hello World');
+      response.status(200)
+        .send(result);
     } catch (error) {
-      response.status(500).send('Hello Mad World');
+      console.log(error)
+      response.status(500)
+        .send('Hello Mad World');
     }
   }
 }

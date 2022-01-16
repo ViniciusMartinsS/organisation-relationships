@@ -20,10 +20,12 @@ class OrganisationRepository implements Repository {
       const sanitize_ = content.map((value: any) => `("${value}")`).join(' ,');
       const query = `INSERT IGNORE INTO organisation(name) VALUES${sanitize_};`;
 
-      await this.connection.query(query) as any;
+      await this.connection
+        .query(query) as any;
 
       const select = `SELECT id FROM organisation WHERE name IN (${sanitize(content)});`;
-      const [ organizations ] = await this.connection.query(select, content) as any;
+      const [ organizations ] = await this.connection
+        .query(select, content) as any;
 
       return organizations.map(({ id }): number => id);
     } catch (error) {
@@ -44,7 +46,8 @@ class OrganisationRepository implements Repository {
 
       query = query.slice(0, -1);
 
-      await this.connection.query(query) as any;
+      await this.connection
+        .query(query) as any;
     } catch (error) {
       console.log('Hi', error);
     }
@@ -52,54 +55,46 @@ class OrganisationRepository implements Repository {
 
   public async findByOrganisation(organisation: string): Promise<any> {
     try {
-      const promises = [];
-
-      let query = this.prepareFindQuery(organisation, 'branch');
-      promises.push(this.connection.query(query));
-
-      query = this.prepareFindQuery(organisation, 'headquarter');
-      promises.push(this.connection.query(query));
-
-      const [ [ branches ], [ headquarters ] ] = await Promise.all(promises);
-
-      if (!headquarters?.length) {
-        return { branches };
-      }
-
-      const parent = headquarters.map(({ name }) => name);
-
-      query = this.prepareFindQuery(parent, 'branch', organisation);
-      const [ sisters ] = (await this.connection.query(query)) as any;
-
-      if (!sisters?.length) {
-        return { branches, headquarters };
-      }
-
-      return { branches, headquarters, ...(sisters.length && { sisters }) };
+      const query = this.prepareFindQuery(organisation);
+      return this.connection
+        .query(query) as any;
     } catch (error) {
       console.log('Hi', error);
     }
   }
 
-  private prepareFindQuery(
-    organisation: string | Array<string>,
-    type: string,
-    current_organization: string | Array<string> = organisation
-  ): string {
-    const FIRST_JOIN = { headquarter: 'branch_id', branch: 'headquarter_id' }[ type ];
-    const SECOND_JOIN = { headquarter: 'headquarter_id', branch: 'branch_id' }[ type ];
-
-    const WHERE_NAME = !Array.isArray(organisation)
-      ? `o.name = "${organisation}"`
-      : `o.name IN (${sanitize(organisation)})`;
-
-    return ` SELECT DISTINCT oo.name FROM organisation AS o
-      RIGHT JOIN organisation_branch AS ob
-      ON o.id = ob.${FIRST_JOIN}
-      LEFT JOIN organisation AS oo
-      ON ob.${SECOND_JOIN} = oo.id
-      WHERE ${WHERE_NAME} AND oo.name != "${current_organization}";
-    `;
+  private prepareFindQuery(organisation: string): string {
+    return `
+    SELECT *
+    FROM(
+      SELECT o.name AS org_name, 'parent' AS relationship_type FROM organisation
+          INNER JOIN organisation_branch
+          ON organisation.id = organisation_branch.branch_id
+          INNER JOIN organisation o
+          ON organisation_branch.headquarter_id = o.id
+          WHERE organisation.name = "${organisation}"
+      UNION
+      SELECT o.name AS org_name, 'daughter' AS relationship_type FROM organisation
+        INNER JOIN organisation_branch
+        ON organisation.id = organisation_branch.headquarter_id
+        INNER JOIN organisation o
+          ON organisation_branch.branch_id = o.id
+      WHERE organisation.name = "${organisation}"
+      UNION
+      SELECT o.name AS org_name, 'sister' AS relationship_type FROM organisation
+        INNER JOIN organisation_branch
+        ON organisation.id = organisation_branch.headquarter_id
+          INNER JOIN organisation o
+          ON organisation_branch.branch_id = o.id
+      WHERE organisation.id IN (
+        SELECT organisation_branch.headquarter_id  FROM organisation
+          INNER JOIN organisation_branch
+          ON organisation.id = organisation_branch.branch_id
+          WHERE organisation.name = "${organisation}"
+      )
+      AND o.name != "${organisation}"
+    ) RESULT ORDER BY org_name LIMIT 100 OFFSET 0;
+  `;
   }
 }
 

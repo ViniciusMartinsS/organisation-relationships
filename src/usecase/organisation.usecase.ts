@@ -10,10 +10,8 @@ class OrganisationUseCase implements UseCase {
 
   public async list(organisation: string): Promise<any> {
     try {
-      const response = await this.OrganisationRepository.findByOrganisation(
-        organisation,
-      );
-
+      const [ response ] = await this.OrganisationRepository
+        .findByOrganisation(organisation);
       return response;
     } catch (error) {
       console.log('Hi', error);
