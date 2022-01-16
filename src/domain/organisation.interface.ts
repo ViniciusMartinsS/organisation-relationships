@@ -22,11 +22,11 @@ export interface Validator {
 }
 
 export interface Repository {
-  createOrganisations(content: Array<string> | string): Promise<any>;
+  createOrganisations(content: Array<string> | string): Promise<Array<number>>;
   createOrganisationBranch(
     headquarter: Array<number>,
     branches: Array<number>,
-  ): Promise<any>;
+  ): Promise<void>;
   findByOrganisation(organisation: string, offset?: number): Promise<Array<ListReturn>>;
 }
 

@@ -4,3 +4,7 @@ export interface DatabaseConfiguration {
   password: string;
   user: string;
 }
+
+export interface SelectOrganisation {
+  id: number
+}

@@ -57,7 +57,16 @@ class OrganisationUseCase implements UseCase {
 
       await Promise.all(headquartersAndBranches)
 
-      return `The registers were successfully saved!`;
+      const result = {
+        count: {
+          organisation: headquarters.length,
+          daughters: branches.length,
+          total: headquarters.length + branches.length
+        },
+        result: payload
+      };
+
+      return result;
     } catch (error) {
       console.log('Hi', error);
     }

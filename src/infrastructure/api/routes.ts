@@ -27,19 +27,16 @@ class Routes {
     type: string,
     request: Request,
     response: Response
-  ): Promise<void> {
+  ): Promise<Response> {
     try {
       const payload = type === 'list'
         ? request.params.id
         : request.body;
 
       const result = await this.handler[type](payload)
-      const show = type === 'list'
-        ? result
-        : 'Hello World';
 
-      response.status(200)
-        .send(show);
+      return response.status(200)
+        .send({ status: true, ...result });
     } catch (error) {
       console.log(error)
       response.status(500)
