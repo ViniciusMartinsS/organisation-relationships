@@ -36,10 +36,6 @@ class OrganisationUseCase implements UseCase {
       const sanitizedPayload =
         this.sanitizePayload(payload, sanitizePayloadArray);
 
-      if (!sanitizedPayload) {
-        return;
-      }
-
       let count = 0;
       const headquarters = [];
       const branches = [];
@@ -96,7 +92,6 @@ class OrganisationUseCase implements UseCase {
     iteration = false
   ): Array<SanitatedPayload> {
     const { org_name: name, daughters } = payload;
-
     if (name && !daughters && !iteration) {
       sanitizePayloadArray.push({ name });
       return sanitizePayloadArray;

@@ -82,4 +82,13 @@ describe('Use Case Suite Tests', () => {
     expect(response).to.be.not.equal(undefined);
     expect(typeof response).to.be.equal('object');
   });
+
+  it('[CREATE] Expect call repository to create one organisation', async () => {
+    const organisationRepositoryMock = new OrganisationRepositoryMock(false);
+    const organisationUseCase = new OrganisationUseCase(organisationRepositoryMock);
+
+    const response = await organisationUseCase.create({ org_name: "Paradise Island" });
+    expect(response).to.be.not.equal(undefined);
+    expect(typeof response).to.be.equal('object');
+  });
 });
