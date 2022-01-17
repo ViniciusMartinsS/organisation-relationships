@@ -13,9 +13,14 @@ export interface CreateReturn {
   rows: CreatePayload
 }
 
+export interface ListParams {
+  organisation: string;
+  offset?: number;
+}
+
 export interface Handler {
   create(payload: CreatePayload): Promise<CreateReturn>;
-  list(organisation: string, offset?: number): Promise<ListReturn>;
+  list(params: ListParams): Promise<ListReturn>;
 }
 
 export interface UseCase {
@@ -24,7 +29,7 @@ export interface UseCase {
 }
 
 export interface Validator {
-  validate(payload: CreatePayload): void;
+  validate(payload: CreatePayload | ListParams, schema: string): void;
 }
 
 export interface Repository {

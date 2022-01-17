@@ -15,7 +15,7 @@ class Routes implements RouterClass {
 
   public organisation(): Router {
     router
-      .route('/:id?')
+      .route('/:organisation?')
       .get(async (request: Request, response: Response) =>
         this.requestHandler('list', request, response)
       )
@@ -30,9 +30,14 @@ class Routes implements RouterClass {
     type: string, request: Request, response: Response
   ): Promise<Response> {
     try {
+      const DEFAULT = {};
+      const { body, params = DEFAULT, query = DEFAULT } = request;
+      const { organisation } = params;
+      const { offset } = query
+
       const payload = type === 'list'
-        ? request.params.id
-        : request.body;
+        ? { organisation, offset }
+        : body;
 
       const result = await this.handler[type](payload)
       return response.status(200)

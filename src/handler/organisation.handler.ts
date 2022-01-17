@@ -1,4 +1,4 @@
-import { CreatePayload, CreateReturn, ListReturn } from '../domain/organisation.interface';
+import { CreatePayload, CreateReturn, ListReturn, ListParams } from '../domain/organisation.interface';
 import { Handler, UseCase, Validator } from "../domain/organisation.interface";
 
 class OrganisationHandler implements Handler {
@@ -10,11 +10,12 @@ class OrganisationHandler implements Handler {
     this.schemaValidator = schemaValidator;
   }
 
-  public async list(organisation: string, offset?: number): Promise<ListReturn> {
+  public async list(params: ListParams): Promise<ListReturn> {
     try {
-      if (!organisation) {
-        throw new Error('Missing organisation');
-      }
+      this.schemaValidator
+        .validate(params, 'LIST_ORGANISATION_SCHEMA');
+
+      const { organisation, offset } = params;
 
       return this.organisationUseCase
         .list(organisation, offset);
@@ -31,7 +32,7 @@ class OrganisationHandler implements Handler {
   public create(payload: CreatePayload): Promise<CreateReturn> {
     try {
       this.schemaValidator
-        .validate(payload);
+        .validate(payload, 'CREATE_ORGANISATION_SCHEMA');
 
       return this.organisationUseCase
         .create(payload);

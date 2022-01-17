@@ -1,9 +1,9 @@
-import { CreatePayload, Validator } from "../domain/organisation.interface";
-import { ORGANISATION_SCHEMA } from "./constants.handler";
+import { CreatePayload, Validator, ListParams } from '../domain/organisation.interface';
+import * as SCHEMAS_VALIDATORS from "./constants.handler";
 
 class SchemaValidator implements Validator {
-  public validate(payload: CreatePayload): void {
-    const { error } = ORGANISATION_SCHEMA.validate(payload);
+  public validate(values: CreatePayload | ListParams, schema: string): void {
+    const { error } = SCHEMAS_VALIDATORS[schema].validate(values);
 
     if (!error) {
       return;
