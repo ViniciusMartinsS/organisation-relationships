@@ -1,9 +1,9 @@
 import { Connection } from 'mysql2/promise';
+import { ERROR } from '../../constants.src';
 import { ListReturn, Repository } from '../../domain/organisation.interface';
 import { SelectOrganisation } from '../infrastructure.interface';
 
-const sanitize = (content: Array<number | string>): string =>
-  content.map((value: string): string => `"${value}"`).join(' ,');
+
 
 class OrganisationRepository implements Repository {
   private connection: Connection;
@@ -22,7 +22,8 @@ class OrganisationRepository implements Repository {
       await this.connection
         .query(query);
 
-      const select = `SELECT id FROM organisation WHERE name IN (${sanitize(content)});`;
+      const sanitize = content.map((value: string): string => `"${value}"`).join(' ,');
+      const select = `SELECT id FROM organisation WHERE name IN (${sanitize});`;
       const [ organizations ] = await this.connection
         .query(select, content) as unknown as Array<Array<SelectOrganisation>>;
 
@@ -32,8 +33,7 @@ class OrganisationRepository implements Repository {
         '[ LOG | ERROR ] => REPOSITORY | CREATE_ORGANISATIONS', error?.message
       );
 
-      const errThrown = { code: 'SY500', trace: 'create' };
-      throw errThrown;
+      throw ERROR.INTERNAL_CREATE;
     }
   }
 
@@ -57,8 +57,7 @@ class OrganisationRepository implements Repository {
         '[ LOG | ERROR ] => REPOSITORY | CREATE_ORGANISATION_BRANCH', error?.message
       );
 
-      const errThrown = { code: 'SY500', trace: 'create' };
-      throw errThrown;
+      throw ERROR.INTERNAL_CREATE;
     }
   }
 
@@ -73,8 +72,7 @@ class OrganisationRepository implements Repository {
         '[ LOG | ERROR ] => REPOSITORY | FIND_BY_ORGANISATION', error?.message
       );
 
-      const errThrown = { code: 'SY500', trace: 'find' };
-      throw errThrown;
+      throw ERROR.INTERNAL_LIST;
     }
   }
 

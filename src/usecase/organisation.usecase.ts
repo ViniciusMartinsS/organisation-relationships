@@ -1,3 +1,4 @@
+import { ERROR } from '../constants.src';
 import {
   CreatePayload,
   CreateReturn,
@@ -24,9 +25,7 @@ class OrganisationUseCase implements UseCase {
       if (error?.code) throw error;
 
       console.log('[ LOG | ERROR ] => USE_CASE | LIST', error?.message);
-
-      const errThrown = { code: 'SY500', trace: 'list' };
-      throw errThrown;
+      throw ERROR.INTERNAL_LIST;
     }
   }
 
@@ -36,7 +35,6 @@ class OrganisationUseCase implements UseCase {
       const sanitizedPayload =
         this.sanitizePayload(payload, sanitizePayloadArray);
 
-      let count = 0;
       const headquarters = [];
       const branches = [];
 
@@ -48,21 +46,18 @@ class OrganisationUseCase implements UseCase {
         headquarters.push(queryHeadquarters);
 
         if (!organisation || !organisation.length) {
-          count += headquarters.length;
           continue;
         }
 
         const queryBranches = this.OrganisationRepository
           .createOrganisations(organisation);
         branches.push(queryBranches);
-
-        count += headquarters.length + branches.length;
       }
 
       const headquarter = await Promise.all(headquarters);
 
       if (!branches.length) {
-        return { count, rows: payload };
+        return { rows: payload };
       }
 
       const branch = await Promise.all(branches);
@@ -75,14 +70,12 @@ class OrganisationUseCase implements UseCase {
       }
 
       await Promise.all(headquartersAndBranches)
-      return { count, rows: payload };
+      return { rows: payload };
     } catch (error) {
       if (error?.code) throw error;
 
       console.log('[ LOG | ERROR ] => USE_CASE | CREATE', error?.message);
-
-      const errThrown = { code: 'SY500', trace: 'create' };
-      throw errThrown;
+      throw ERROR.INTERNAL_CREATE;
     }
   }
 

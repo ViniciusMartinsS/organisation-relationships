@@ -1,3 +1,4 @@
+import { ERROR } from '../constants.src';
 import { CreatePayload, Validator, ListParams } from '../domain/organisation.interface';
 import * as SCHEMAS_VALIDATORS from "./constants.handler";
 
@@ -12,7 +13,7 @@ class SchemaValidator implements Validator {
     const { message } = error;
     console.log('[ LOG | ERROR ] => SCHEMA_VALIDATOR | VALIDATE', message);
 
-    const err = { code: 'SY400', trace: 'validate', ...(message && { message }) };
+    const err = { ...ERROR.INVALID_PAYLOAD_CREATE, ...(message && { message }) };
     throw err;
   }
 }

@@ -29,10 +29,10 @@ describe('Handler Suite Tests', () => {
       );
 
       const response = await organisationHandler.list({} as ListParams);
-      expect(response).to.be.equal(undefined)
+      expect(response).to.be.equal(undefined);
     } catch (error) {
-      expect(typeof error).to.be.equal('object')
-      expect(error).to.contains(listJoiErrorResult)
+      expect(typeof error).to.be.equal('object');
+      expect(error).to.contains(listJoiErrorResult);
     }
   });
 
@@ -44,11 +44,10 @@ describe('Handler Suite Tests', () => {
       );
 
       const response = await organisationHandler.list({ organisation: 'organisation', offset: '0' });
-      expect(response).to.be.equal(undefined)
+      expect(response).to.be.equal(undefined);
     } catch (error) {
-      console.log(error)
-      expect(typeof error).to.be.equal('object')
-      expect(error).to.contains(listInternalErrorResult)
+      expect(typeof error).to.be.equal('object');
+      expect(error).to.contains(listInternalErrorResult);
     }
   });
 
@@ -59,8 +58,8 @@ describe('Handler Suite Tests', () => {
     );
 
     const response = await organisationHandler.list({ organisation: 'organisation', offset: '0' });
-    expect(response).to.be.not.equal(undefined)
-    expect(typeof response).to.be.equal('object')
+    expect(response).to.be.not.equal(undefined);
+    expect(typeof response).to.be.equal('object');
   });
 
   it('[CREATE] Expect JOI error when sending invalid payload to list', async () => {
@@ -71,10 +70,10 @@ describe('Handler Suite Tests', () => {
       );
 
       const response = await organisationHandler.create({} as CreatePayload);
-      expect(response).to.be.equal(undefined)
+      expect(response).to.be.equal(undefined);
     } catch (error) {
-      expect(typeof error).to.be.equal('object')
-      expect(error).to.contains(createJoiErrorResult)
+      expect(typeof error).to.be.equal('object');
+      expect(error).to.contains(createJoiErrorResult);
     }
   });
 
@@ -86,11 +85,10 @@ describe('Handler Suite Tests', () => {
       );
 
       const response = await organisationHandler.create({ org_name: 'org_name' });
-      expect(response).to.be.equal(undefined)
+      expect(response).to.be.equal(undefined);
     } catch (error) {
-      console.log(error)
-      expect(typeof error).to.be.equal('object')
-      expect(error).to.contains(createInternalErrorResult)
+      expect(typeof error).to.be.equal('object');
+      expect(error).to.contains(createInternalErrorResult);
     }
   });
 
@@ -101,7 +99,7 @@ describe('Handler Suite Tests', () => {
     );
 
     const response = await organisationHandler.create({ org_name: 'org_name' });
-    expect(response).to.be.not.equal(undefined)
-    expect(typeof response).to.be.equal('object')
+    expect(response).to.be.not.equal(undefined);
+    expect(typeof response).to.be.equal('object');
   });
 });

@@ -1,15 +1,18 @@
 import * as Joi from 'joi';
 
+const SCHEMA_LIST = 'LIST_ORGANISATION_SCHEMA';
+const SCHEMA_CREATE = 'CREATE_ORGANISATION_SCHEMA';
+
 const CREATE_ORGANISATION_SCHEMA = Joi.object({
   org_name: Joi.string()
     .trim()
     .required(),
 
   daughters: Joi.array()
-    .items(Joi.link('#CREATE_ORGANISATION_SCHEMA'))
+    .items(Joi.link(`#${SCHEMA_CREATE}`))
     .optional()
 })
-  .id('CREATE_ORGANISATION_SCHEMA');
+  .id(SCHEMA_CREATE);
 
 const LIST_ORGANISATION_SCHEMA = Joi.object({
   organisation: Joi.string()
@@ -17,6 +20,11 @@ const LIST_ORGANISATION_SCHEMA = Joi.object({
 
   offset: Joi.string()
     .required()
-})
+});
 
-export { CREATE_ORGANISATION_SCHEMA, LIST_ORGANISATION_SCHEMA };
+export {
+  CREATE_ORGANISATION_SCHEMA,
+  LIST_ORGANISATION_SCHEMA,
+  SCHEMA_CREATE,
+  SCHEMA_LIST
+};

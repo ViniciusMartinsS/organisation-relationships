@@ -9,8 +9,7 @@ export interface ListReturn {
 }
 
 export interface CreateReturn {
-  count: number;
-  rows: CreatePayload
+  rows: CreatePayload;
 }
 
 export interface ListParams {
@@ -43,5 +42,5 @@ export interface Repository {
 
 export interface SanitatedPayload {
   name: string;
-  organisation?: Array<string>
+  organisation?: Array<string>;
 }

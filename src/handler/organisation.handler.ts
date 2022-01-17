@@ -1,5 +1,7 @@
+import { ERROR } from '../constants.src';
 import { CreatePayload, CreateReturn, ListReturn, ListParams } from '../domain/organisation.interface';
 import { Handler, UseCase, Validator } from "../domain/organisation.interface";
+import { SCHEMA_LIST, SCHEMA_CREATE } from './constants.handler';
 
 class OrganisationHandler implements Handler {
   private organisationUseCase: UseCase;
@@ -13,7 +15,7 @@ class OrganisationHandler implements Handler {
   public async list(params: ListParams): Promise<ListReturn> {
     try {
       this.schemaValidator
-        .validate(params, 'LIST_ORGANISATION_SCHEMA');
+        .validate(params, SCHEMA_LIST);
 
       const { organisation, offset } = params;
 
@@ -25,16 +27,14 @@ class OrganisationHandler implements Handler {
       if (error?.code) throw error;
 
       console.log('[ LOG | ERROR ] => HANDLER | LIST', error?.message);
-
-      const errThrown = { code: 'SY500', trace: 'list' };
-      throw errThrown;
+      throw ERROR.INTERNAL_LIST;
     }
   }
 
   public async create(payload: CreatePayload): Promise<CreateReturn> {
     try {
       this.schemaValidator
-        .validate(payload, 'CREATE_ORGANISATION_SCHEMA');
+        .validate(payload, SCHEMA_CREATE);
 
       const result = await this.organisationUseCase
         .create(payload);
@@ -44,9 +44,7 @@ class OrganisationHandler implements Handler {
       if (error?.code) throw error;
 
       console.log('[ LOG | ERROR ] => HANDLER | CREATE', error?.message);
-
-      const errThrown = { code: 'SY500', trace: 'create' };
-      throw errThrown;
+      throw ERROR.INTERNAL_CREATE;
     }
   }
 }

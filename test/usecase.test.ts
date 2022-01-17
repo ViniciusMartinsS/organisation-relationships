@@ -51,7 +51,6 @@ describe('Use Case Suite Tests', () => {
       );
       expect(response).to.be.equal(undefined);
     } catch (error) {
-      console.log(error);
       expect(typeof error).to.be.equal('object');
       expect(error).to.contains(createInternalErrorResult);
     }
