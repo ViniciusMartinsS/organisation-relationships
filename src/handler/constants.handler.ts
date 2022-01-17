@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import * as Joi from 'joi';
 
 const CREATE_ORGANISATION_SCHEMA = Joi.object({
   org_name: Joi.string()

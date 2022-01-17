@@ -17,8 +17,10 @@ class OrganisationHandler implements Handler {
 
       const { organisation, offset } = params;
 
-      return this.organisationUseCase
+      const result = await this.organisationUseCase
         .list(organisation, offset);
+
+      return result;
     } catch (error) {
       if (error?.code) throw error;
 
@@ -29,13 +31,15 @@ class OrganisationHandler implements Handler {
     }
   }
 
-  public create(payload: CreatePayload): Promise<CreateReturn> {
+  public async create(payload: CreatePayload): Promise<CreateReturn> {
     try {
       this.schemaValidator
         .validate(payload, 'CREATE_ORGANISATION_SCHEMA');
 
-      return this.organisationUseCase
+      const result = await this.organisationUseCase
         .create(payload);
+
+      return result
     } catch (error) {
       if (error?.code) throw error;
 

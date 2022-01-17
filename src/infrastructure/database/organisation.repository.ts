@@ -62,7 +62,7 @@ class OrganisationRepository implements Repository {
     }
   }
 
-  public async findByOrganisation(organisation: string, offset = 0): Promise<Array<ListReturn>> {
+  public async findByOrganisation(organisation: string, offset = '0'): Promise<Array<ListReturn>> {
     try {
       const query = this.prepareFindQuery(organisation, offset);
 
@@ -78,7 +78,7 @@ class OrganisationRepository implements Repository {
     }
   }
 
-  private prepareFindQuery(organisation: string, offset: number): string {
+  private prepareFindQuery(organisation: string, offset: string): string {
     return `
     SELECT *
     FROM(

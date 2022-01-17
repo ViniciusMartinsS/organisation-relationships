@@ -14,7 +14,7 @@ class OrganisationUseCase implements UseCase {
     this.OrganisationRepository = organisationRepository;
   }
 
-  public async list(organisation: string, offset?: number): Promise<ListReturn> {
+  public async list(organisation: string, offset?: string): Promise<ListReturn> {
     try {
       const [ response ] = await this.OrganisationRepository
         .findByOrganisation(organisation, offset);

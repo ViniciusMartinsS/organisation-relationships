@@ -1,6 +1,6 @@
 export interface CreatePayload {
   org_name: string;
-  daughters: Array<CreatePayload>;
+  daughters?: Array<CreatePayload>;
 }
 
 export interface ListReturn {
@@ -15,7 +15,7 @@ export interface CreateReturn {
 
 export interface ListParams {
   organisation: string;
-  offset?: number;
+  offset?: string;
 }
 
 export interface Handler {
@@ -25,7 +25,7 @@ export interface Handler {
 
 export interface UseCase {
   create(payload: CreatePayload): Promise<CreateReturn>;
-  list(organisation: string, offset?: number): Promise<ListReturn>;
+  list(organisation: string, offset?: string): Promise<ListReturn>;
 }
 
 export interface Validator {
@@ -38,10 +38,10 @@ export interface Repository {
     headquarter: Array<number>,
     branches: Array<number>,
   ): Promise<void>;
-  findByOrganisation(organisation: string, offset?: number): Promise<Array<ListReturn>>;
+  findByOrganisation(organisation: string, offset?: string): Promise<Array<ListReturn>>;
 }
 
 export interface SanitatedPayload {
   name: string;
-  organisation: Array<string>
+  organisation?: Array<string>
 }
