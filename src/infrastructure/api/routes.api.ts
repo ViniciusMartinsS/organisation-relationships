@@ -4,6 +4,8 @@ import { RouterClass } from '../infrastructure.interface';
 
 const router = Router();
 
+const STATUSES = { SY400: 400, SY500: 500 }
+
 class Routes implements RouterClass {
   private handler: Handler;
 
@@ -25,9 +27,7 @@ class Routes implements RouterClass {
   }
 
   private async requestHandler(
-    type: string,
-    request: Request,
-    response: Response
+    type: string, request: Request, response: Response
   ): Promise<Response> {
     try {
       const payload = type === 'list'
@@ -35,13 +35,17 @@ class Routes implements RouterClass {
         : request.body;
 
       const result = await this.handler[type](payload)
-
       return response.status(200)
         .send({ status: true, result });
     } catch (error) {
-      console.log(error)
-      response.status(500)
-        .send('Hello Mad World');
+      const { code, trace } = error;
+      const message = trace !== 'validate'
+        ? `Unable to handle the ${trace} request`
+        : error.message
+
+      const result = { status: false, code, message }
+      response.status(STATUSES[code])
+        .send(result);
     }
   }
 }

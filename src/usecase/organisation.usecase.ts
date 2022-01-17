@@ -21,7 +21,12 @@ class OrganisationUseCase implements UseCase {
 
       return response;
     } catch (error) {
-      console.log('Hi', error);
+      if (error?.code) throw error;
+
+      console.log('[ LOG | ERROR ] => USE_CASE | LIST', error?.message);
+
+      const errThrown = { code: 'SY500', trace: 'list' };
+      throw errThrown;
     }
   }
 
@@ -31,6 +36,7 @@ class OrganisationUseCase implements UseCase {
       const sanitizedPayload =
         this.sanitizePayload(payload, sanitizePayloadArray);
 
+      let count = 0;
       const headquarters = [];
       const branches = [];
 
@@ -44,6 +50,8 @@ class OrganisationUseCase implements UseCase {
         const queryBranches = this.OrganisationRepository
           .createOrganisations(organisation);
         branches.push(queryBranches);
+
+        count += headquarters.length + branches.length
       }
 
       const headquarter = await Promise.all(headquarters);
@@ -57,19 +65,14 @@ class OrganisationUseCase implements UseCase {
       }
 
       await Promise.all(headquartersAndBranches)
-
-      const result = {
-        count: {
-          organisation: headquarters.length,
-          daughters: branches.length,
-          total: headquarters.length + branches.length
-        },
-        rows: payload
-      };
-
-      return result;
+      return { count, rows: payload };
     } catch (error) {
-      console.log('Hi', error);
+      if (error?.code) throw error;
+
+      console.log('[ LOG | ERROR ] => USE_CASE | CREATE', error?.message);
+
+      const errThrown = { code: 'SY500', trace: 'create' };
+      throw errThrown;
     }
   }
 

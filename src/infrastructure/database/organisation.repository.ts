@@ -28,7 +28,12 @@ class OrganisationRepository implements Repository {
 
       return organizations.map(({ id }): number => id);
     } catch (error) {
-      console.log('Hi', error);
+      console.log(
+        '[ LOG | ERROR ] => REPOSITORY | CREATE_ORGANISATIONS', error?.message
+      );
+
+      const errThrown = { code: 'SY500', trace: 'create' };
+      throw errThrown;
     }
   }
 
@@ -48,7 +53,12 @@ class OrganisationRepository implements Repository {
       await this.connection
         .query(query);
     } catch (error) {
-      console.log('Hi', error);
+      console.log(
+        '[ LOG | ERROR ] => REPOSITORY | CREATE_ORGANISATION_BRANCH', error?.message
+      );
+
+      const errThrown = { code: 'SY500', trace: 'create' };
+      throw errThrown;
     }
   }
 
@@ -59,7 +69,12 @@ class OrganisationRepository implements Repository {
       return this.connection
         .query(query) as unknown as Array<ListReturn>;
     } catch (error) {
-      console.log('Hi', error);
+      console.log(
+        '[ LOG | ERROR ] => REPOSITORY | FIND_BY_ORGANISATION', error?.message
+      );
+
+      const errThrown = { code: 'SY500', trace: 'find' };
+      throw errThrown;
     }
   }
 

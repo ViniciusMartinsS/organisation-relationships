@@ -9,7 +9,10 @@ class SchemaValidator implements Validator {
       return;
     }
 
-    const err = { context: 'validation', message: 'invalid' };
+    const { message } = error;
+    console.log('[ LOG | ERROR ] => SCHEMA_VALIDATOR | VALIDATE', message);
+
+    const err = { code: 'SY400', trace: 'validate', ...(message && { message }) };
     throw err;
   }
 }

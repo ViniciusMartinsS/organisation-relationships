@@ -19,7 +19,12 @@ class OrganisationHandler implements Handler {
       return this.organisationUseCase
         .list(organisation, offset);
     } catch (error) {
-      console.log('Hi', error);
+      if (error?.code) throw error;
+
+      console.log('[ LOG | ERROR ] => HANDLER | LIST', error?.message);
+
+      const errThrown = { code: 'SY500', trace: 'list' };
+      throw errThrown;
     }
   }
 
@@ -31,7 +36,12 @@ class OrganisationHandler implements Handler {
       return this.organisationUseCase
         .create(payload);
     } catch (error) {
-      console.log('Hi', error);
+      if (error?.code) throw error;
+
+      console.log('[ LOG | ERROR ] => HANDLER | CREATE', error?.message);
+
+      const errThrown = { code: 'SY500', trace: 'create' };
+      throw errThrown;
     }
   }
 }

@@ -1,9 +1,3 @@
-interface count {
-  organisation: number;
-  daughters: number;
-  total: number;
-}
-
 export interface CreatePayload {
   org_name: string;
   daughters: Array<CreatePayload>;
@@ -15,7 +9,7 @@ export interface ListReturn {
 }
 
 export interface CreateReturn {
-  count: count;
+  count: number;
   rows: CreatePayload
 }
 
