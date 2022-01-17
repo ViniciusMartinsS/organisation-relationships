@@ -36,6 +36,10 @@ class OrganisationUseCase implements UseCase {
       const sanitizedPayload =
         this.sanitizePayload(payload, sanitizePayloadArray);
 
+      if (!sanitizedPayload) {
+        return;
+      }
+
       let count = 0;
       const headquarters = [];
       const branches = [];
@@ -47,14 +51,24 @@ class OrganisationUseCase implements UseCase {
           .createOrganisations(name);
         headquarters.push(queryHeadquarters);
 
+        if (!organisation || !organisation.length) {
+          count += headquarters.length;
+          continue;
+        }
+
         const queryBranches = this.OrganisationRepository
           .createOrganisations(organisation);
         branches.push(queryBranches);
 
-        count += headquarters.length + branches.length
+        count += headquarters.length + branches.length;
       }
 
       const headquarter = await Promise.all(headquarters);
+
+      if (!branches.length) {
+        return { count, rows: payload };
+      }
+
       const branch = await Promise.all(branches);
 
       const headquartersAndBranches = [];
@@ -78,9 +92,15 @@ class OrganisationUseCase implements UseCase {
 
   private sanitizePayload(
     payload: CreatePayload,
-    sanitizePayloadArray: Array<SanitatedPayload>
+    sanitizePayloadArray: Array<SanitatedPayload>,
+    iteration = false
   ): Array<SanitatedPayload> {
     const { org_name: name, daughters } = payload;
+
+    if (name && !daughters && !iteration) {
+      sanitizePayloadArray.push({ name });
+      return sanitizePayloadArray;
+    }
 
     if (!name || (name && !daughters)) {
       return sanitizePayloadArray;
@@ -99,7 +119,7 @@ class OrganisationUseCase implements UseCase {
   ): void {
     for (let index = 0; index < daughters.length; index++) {
       const daughter = daughters[index];
-      this.sanitizePayload(daughter, sanitizePayloadArray);
+      this.sanitizePayload(daughter, sanitizePayloadArray, true);
     }
   }
 }

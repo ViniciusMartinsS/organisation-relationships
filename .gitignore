@@ -7,3 +7,7 @@ dist
 
 # Editor
 .vscode
+
+# Test
+coverage
+.nyc_output
