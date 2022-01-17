@@ -10,7 +10,8 @@ export class OrganisationBranchDatabase1642209179650 implements MigrationInterfa
                 FOREIGN KEY (headquarter_id)
                 REFERENCES organisation(id),
                 FOREIGN KEY (branch_id)
-                REFERENCES organisation(id)
+                REFERENCES organisation(id),
+                UNIQUE KEY (headquarter_id, branch_id)
             );
         `);
   }
