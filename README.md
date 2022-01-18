@@ -69,7 +69,7 @@ This service aims to manage organisation relationships.
 
   </br>
 
-  > **Creates organisation and its branches**
+  > **Creates organisation and its relations**
 
   #### URL
   `/organisation`
@@ -193,7 +193,7 @@ $ make stop
 
 **- Run Application Locally**
 
-<sub>⚠️ Before starting, make sure to have a MySQL instance running. Also, set up the database configuration `ormconfig.json` on the root of the project.</sup>
+<sub>⚠️ Before starting, make sure to have a MySQL instance running, and a `organisation` database created. Also, set up the database configuration `ormconfig.json` on the root of the project.</sup>
 
 **- Run Database Migration**
 ```

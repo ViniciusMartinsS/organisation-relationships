@@ -9,4 +9,4 @@ WORKDIR /app
 RUN npm install
 RUN rm -Rf dist && npm run build
 
-CMD sleep 10 && npm run typeorm migration:run && node dist/src/infrastructure/api/index.js
+CMD sleep 5 && npm run typeorm migration:run && node dist/src/infrastructure/api/index.js
