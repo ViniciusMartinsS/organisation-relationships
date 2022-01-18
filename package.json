@@ -4,11 +4,9 @@
   "description": "Pipedrive task",
   "main": "index.js",
   "scripts": {
+    "start": "npm run build && node dist/src/infrastructure/api/index.js",
     "build": "rm -rf dist && tsc",
-    "build:watch": "rm -rf dist && tsc -w",
-    "dev": "ts-node-dev --inspect=0.0.0.0:${DEBUG_PORT:-3001} -- src/bin/index.ts",
     "lint": "eslint . --ext .ts",
-    "lint-staged": "lint-staged",
     "test": "env TS_NODE_PROJECT=tsconfig.testing.json nyc mocha --require ts-node/register -S test/*.test.ts; nyc report --reporter=lcov --check-coverage --lines 90",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "create-migration": "./node_modules/typeorm/cli.js migration:create -d src/infrastructure/database/migration -n"
@@ -54,12 +52,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && tsc --noEmit && npm run test:coverage"
+      "pre-commit": "npm run test"
     }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix"
-    ]
   }
 }
