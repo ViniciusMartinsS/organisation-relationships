@@ -1,10 +1,17 @@
-const INTERNAL_ERROR_CODE = 'SY500'
-const INVALID_PAYLOAD_ERROR_CODE = 'SY400'
+export const INTERNAL_ERROR_CODE = 'SY500';
+const INVALID_PAYLOAD_ERROR_CODE = 'SY400';
 
-const ERROR = {
-  INTERNAL_LIST: { code: INTERNAL_ERROR_CODE, trace: 'list' },
-  INTERNAL_CREATE: { code: INTERNAL_ERROR_CODE, trace: 'create' },
-  INVALID_PAYLOAD_CREATE: { code: INVALID_PAYLOAD_ERROR_CODE, trace: 'validate' }
-}
+export const TYPE_LIST = 'list';
+export const TYPE_CREATE = 'create';
+export const TRACE_VALIDATE = 'validate';
 
-export { ERROR }
+export const ERROR = {
+  INTERNAL_LIST: { code: INTERNAL_ERROR_CODE, trace: TYPE_LIST },
+  INTERNAL_CREATE: { code: INTERNAL_ERROR_CODE, trace: TYPE_CREATE },
+  INVALID_PAYLOAD_CREATE: { code: INVALID_PAYLOAD_ERROR_CODE, trace: TRACE_VALIDATE }
+};
+
+export const STATUSES = {
+  [INVALID_PAYLOAD_ERROR_CODE]: 400,
+  [INTERNAL_ERROR_CODE]: 500
+};

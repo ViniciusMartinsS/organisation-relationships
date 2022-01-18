@@ -1,10 +1,9 @@
 import { Request, Response, Router } from 'express';
 import { Handler } from '../../domain/organisation.interface';
 import { RouterClass } from '../infrastructure.interface';
+import { STATUSES, TRACE_VALIDATE, TYPE_LIST, TYPE_CREATE, INTERNAL_ERROR_CODE } from '../../constants.src';
 
 const router = Router();
-
-const STATUSES = { SY400: 400, SY500: 500 }
 
 class Routes implements RouterClass {
   private handler: Handler;
@@ -17,10 +16,10 @@ class Routes implements RouterClass {
     router
       .route('/:organisation?')
       .get(async (request: Request, response: Response) =>
-        this.requestHandler('list', request, response)
+        this.requestHandler(TYPE_LIST, request, response)
       )
       .post(async (request: Request, response: Response) =>
-        this.requestHandler('create', request, response)
+        this.requestHandler(TYPE_CREATE, request, response)
       );
 
     return router;
@@ -33,23 +32,23 @@ class Routes implements RouterClass {
       const DEFAULT = {};
       const { body, params = DEFAULT, query = DEFAULT } = request;
       const { organisation } = params;
-      const { offset } = query
+      const { offset } = query;
 
-      const payload = type === 'list'
+      const payload = type === TYPE_LIST
         ? { organisation, offset }
         : body;
 
-      const result = await this.handler[type](payload)
+      const result = await this.handler[type](payload);
       return response.status(200)
         .send({ status: true, result });
     } catch (error) {
-      const { code, trace } = error;
-      const message = trace !== 'validate'
+      const { code = INTERNAL_ERROR_CODE, trace = '' } = error;
+      const message = trace !== TRACE_VALIDATE
         ? `Unable to handle the ${trace} request`
-        : error.message
+        : error.message;
 
-      const result = { status: false, code, message }
-      response.status(STATUSES[code])
+      const result = { status: false, code, message };
+      response.status(STATUSES[code] || STATUSES[INTERNAL_ERROR_CODE])
         .send(result);
     }
   }

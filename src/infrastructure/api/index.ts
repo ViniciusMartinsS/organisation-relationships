@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import express from 'express';
 import Database from '../database';
 import OrganisationHandler from '../../handler/organisation.handler';
@@ -39,8 +39,8 @@ async function initialize(): Promise<void> {
 
     app.use('/organisation', routes.organisation());
 
-    console.log('All dependencies initialized!\n')
+    console.log('All dependencies initialized!\n');
   } catch (error) {
-    console.log('It was not possible to start the application.', error)
+    console.log('It was not possible to start the application.', error);
   }
 }

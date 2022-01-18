@@ -69,7 +69,7 @@ class OrganisationUseCase implements UseCase {
         headquartersAndBranches.push(query);
       }
 
-      await Promise.all(headquartersAndBranches)
+      await Promise.all(headquartersAndBranches);
       return { rows: payload };
     } catch (error) {
       if (error?.code) throw error;

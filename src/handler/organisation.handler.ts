@@ -39,7 +39,7 @@ class OrganisationHandler implements Handler {
       const result = await this.organisationUseCase
         .create(payload);
 
-      return result
+      return result;
     } catch (error) {
       if (error?.code) throw error;
 

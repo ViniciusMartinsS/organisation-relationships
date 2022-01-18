@@ -142,6 +142,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/no-object-literal-type-assertion': 0,
-    'brace-style': 2
+    'brace-style': 2,
+    'semi': 'error'
   }
-}
+};

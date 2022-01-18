@@ -17,7 +17,7 @@ class OrganisationUseCaseMock implements UseCase {
       throw err;
     }
 
-    const response = { org_name: 'success', relationship_type: 'parent' } as ListReturn
+    const response = { org_name: 'success', relationship_type: 'parent' } as ListReturn;
     return response;
   }
 
@@ -27,7 +27,7 @@ class OrganisationUseCaseMock implements UseCase {
       throw err;
     }
 
-    const response = { count: 1, rows: { org_name: 'success' } } as CreateReturn
+    const response = { count: 1, rows: { org_name: 'success' } } as CreateReturn;
     return response;
   }
 }
