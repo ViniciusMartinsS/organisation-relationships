@@ -3,8 +3,6 @@ import { ERROR } from '../../constants.src';
 import { ListReturn, Repository } from '../../domain/organisation.interface';
 import { SelectOrganisation } from '../infrastructure.interface';
 
-
-
 class OrganisationRepository implements Repository {
   private connection: Connection;
 
@@ -24,6 +22,7 @@ class OrganisationRepository implements Repository {
 
       const sanitize = content.map((value: string): string => `"${value}"`).join(' ,');
       const select = `SELECT id FROM organisation WHERE name IN (${sanitize});`;
+
       const [ organizations ] = await this.connection
         .query(select, content) as unknown as Array<Array<SelectOrganisation>>;
 
